@@ -4,9 +4,7 @@ import com.example.composeusersapp.data.models.GenericError
 import com.example.composeusersapp.data.models.ServiceResult
 import com.example.composeusersapp.data.models.UsersResponse
 
-class UserDataSource {
-
-    val usersApi = RetrofitInstance.api //todo inject
+class UserRepository(private val usersApi: ApiUsersService) {
 
     companion object {
         private const val GENERIC_ERROR_MESSAGE = "Something went wrong"

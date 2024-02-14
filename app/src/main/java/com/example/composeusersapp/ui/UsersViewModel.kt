@@ -3,17 +3,19 @@ package com.example.composeusersapp.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.composeusersapp.data.UserDataSource
+import com.example.composeusersapp.data.UserRepository
 import com.example.composeusersapp.data.models.GenericError
 import com.example.composeusersapp.data.models.ServiceResult
 import com.example.composeusersapp.data.models.User
 import com.example.composeusersapp.data.models.UsersResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UsersViewModel : ViewModel() {
-
-    val dataSource=  UserDataSource()//todo inject
-
+@HiltViewModel
+class UsersViewModel @Inject constructor(
+    private val dataSource: UserRepository
+) : ViewModel() {
 
     val results = 10
 
