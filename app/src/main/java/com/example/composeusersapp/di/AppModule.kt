@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val URL = "https://randomuser.me/api/?inc=name,email,gender,registered,phone,location"
+    private const val URL = "https://randomuser.me/api/?inc=name,email,gender,registered,phone,location,picture"
 
     @Provides
     @Singleton
