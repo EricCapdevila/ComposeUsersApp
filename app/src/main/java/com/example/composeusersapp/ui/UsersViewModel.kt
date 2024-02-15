@@ -23,8 +23,8 @@ class UsersViewModel @Inject constructor(
     private val results = 10
     private var seed = ""
 
-    private val _usersList = MutableStateFlow(UserListState())
-    val usersList = _usersList.asStateFlow()
+    private val _usersState = MutableStateFlow(UserListState())
+    val usersState = _usersState.asStateFlow()
 
     init {
         getUsers(1)
@@ -41,8 +41,23 @@ class UsersViewModel @Inject constructor(
         }
     }
 
+    fun filterUsers(input: String) {
+        viewModelScope.launch {
+            val filteredData = if (input.isEmpty()) {
+                null
+            } else {
+                _usersState.value.data.filter {
+                    it.name.contains(input) || it.email.contains(input)
+                }
+            }
+            _usersState.update { userState ->
+                userState.copy(filteredData = filteredData)
+            }
+        }
+    }
+
     private fun updateList(response: UsersResponse) {
-        _usersList.update { userState ->
+        _usersState.update { userState ->
             userState.copy(error = null, data = userState.data.toMutableList().apply {
                 addAll(
                     response.results.map { user ->
@@ -54,7 +69,7 @@ class UsersViewModel @Inject constructor(
     }
 
     private fun updateError(message: String?) {
-        _usersList.update { userState ->
+        _usersState.update { userState ->
             userState.copy(error = message?.let { message } ?: userState.error)
         }
     }
