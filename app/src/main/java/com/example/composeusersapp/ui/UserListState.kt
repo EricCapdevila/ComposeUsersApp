@@ -1,7 +1,7 @@
 package com.example.composeusersapp.ui
 
 data class UserListState(
-    val data: MutableList<UserUI>? = null,
+    val data: MutableList<UserUI> = mutableListOf(),
     val error: String? = null
 )
 

@@ -43,14 +43,13 @@ class UsersViewModel @Inject constructor(
 
     private fun updateList(response: UsersResponse) {
         _usersList.update { userState ->
-            userState.copy(data = userState.data?.let {
-                it.toMutableList().apply {
-                    addAll(
-                        response.results.map { user ->
-                            getUserUI(user)
-                        })
-                }
-            })
+            userState.copy(error = null, data = userState.data.toMutableList().apply {
+                addAll(
+                    response.results.map { user ->
+                        getUserUI(user)
+                    })
+            }
+            )
         }
     }
 

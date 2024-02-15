@@ -43,9 +43,8 @@ class MainActivity : ComponentActivity() {
                         val users = data
                         val message = error
 
-                        users?.let {
-                            UserList(it)
-                        }
+                        UserList(users)
+
                         message?.let {
                             scope.launch {
                                 SnackbarHostState().showSnackbar(it)
@@ -71,12 +70,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun UserItemPreview() {
-        ComposeUsersAppTheme {
-          //  UserItem()
-        }
-    }
+
 }
 

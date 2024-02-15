@@ -4,10 +4,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 fun String.parseDate(fromFormat: String, toFormat: String): String{
-    val sourceFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
-    val requiredFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+    val sourceFormat = SimpleDateFormat(fromFormat, Locale.getDefault())
+    val requiredFormat = SimpleDateFormat(toFormat, Locale.getDefault())
 
-    return sourceFormat.parse(this)?.let{
-        requiredFormat.format(it)
-    } ?: "-"
+    return try {
+        sourceFormat.parse(this)?.let{
+            requiredFormat.format(it)
+        } ?: "-"
+    } catch (e: Exception) {
+        return e.message ?: "wrong date format"
+    }
 }
