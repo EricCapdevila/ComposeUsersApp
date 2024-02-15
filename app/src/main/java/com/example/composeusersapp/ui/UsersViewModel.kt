@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.composeusersapp.data.UserRepository
 import com.example.composeusersapp.data.models.Name
 import com.example.composeusersapp.data.models.User
+import com.example.composeusersapp.data.models.UsersResponse
 import com.example.composeusersapp.data.parseDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,33 +20,43 @@ class UsersViewModel @Inject constructor(
     private val dataSource: UserRepository
 ) : ViewModel() {
 
-    val results = 10
+    private val results = 10
+    private var seed = ""
 
-    private val _usersList = MutableStateFlow(mutableListOf<UserUI>())
+    private val _usersList = MutableStateFlow(UserListState())
     val usersList = _usersList.asStateFlow()
 
-    var seed = ""
-
-    data class UserUI(
-        val name: String,
-        val email: String,
-        val gender: String,
-        val registered: String,
-        val phone: String,
-        val picture: String
-    )
+    init {
+        getUsers(1)
+    }
 
     fun getUsers(page: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.getUsers(results, page, seed).apply {
-                getSuccess()?.let {
-                    usersList.value.addAll(
-                        it.results.map { user -> getUserUI(user) }
-                    )
-                    seed = it.info.seed
-                }
-                // HANDLE ERROR
+                getSuccess()?.let { response ->
+                    updateList(response)
+                    seed = response.info.seed
+                } ?: updateError(getError()?.message)
             }
+        }
+    }
+
+    private fun updateList(response: UsersResponse) {
+        _usersList.update { userState ->
+            userState.copy(data = userState.data?.let {
+                it.toMutableList().apply {
+                    addAll(
+                        response.results.map { user ->
+                            getUserUI(user)
+                        })
+                }
+            })
+        }
+    }
+
+    private fun updateError(message: String?) {
+        _usersList.update { userState ->
+            userState.copy(error = message?.let { message } ?: userState.error)
         }
     }
 

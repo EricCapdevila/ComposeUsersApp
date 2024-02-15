@@ -1,4 +1,4 @@
-package com.example.composeusersapp.ui
+package com.example.composeusersapp.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -26,10 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.composeusersapp.R.drawable
+import com.example.composeusersapp.ui.UserUI
 
 @Composable
 fun UserItem(
-    //user: User
+    user: UserUI
 ) {
     Column(modifier = Modifier.wrapContentHeight()) {
         Row(
@@ -39,8 +40,8 @@ fun UserItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            UserImage()
-            UserTextFields()
+            UserImage(user.picture)
+            UserTextFields(user.name, user.email)
             IconImage()
         }
         Divider(
@@ -52,11 +53,10 @@ fun UserItem(
 }
 
 @Composable
-fun UserImage() {
+fun UserImage(source: String) {
     Image(
         painter = painterResource(id = drawable.ic_launcher_background),
         contentDescription = "example",
-        //alignment = Alignment.BottomCenter,
         modifier = Modifier
             .padding(10.dp)
             .clip(CircleShape)
@@ -72,7 +72,7 @@ fun IconImage() {
 }
 
 @Composable
-fun UserTextFields(name: String = "Miss. Emily Montoya", email: String = "emily@hotmail.es") {
+fun UserTextFields(name: String, email: String) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -80,7 +80,7 @@ fun UserTextFields(name: String = "Miss. Emily Montoya", email: String = "emily@
         verticalArrangement = Arrangement.Center
     ) {
         Text(name)
-        Spacer(modifier = Modifier.height(0.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(email)
     }
 }
