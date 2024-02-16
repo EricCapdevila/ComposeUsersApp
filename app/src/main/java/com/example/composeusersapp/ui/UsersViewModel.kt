@@ -34,7 +34,7 @@ class UsersViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.getUsers(results, page, seed).apply {
                 getSuccess()?.let { response ->
-                    updateList(response)
+                    updateList(response.results)
                     seed = response.info.seed
                 } ?: updateError(getError()?.message)
             }
@@ -56,11 +56,11 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    private fun updateList(response: UsersResponse) {
+    private fun updateList(users: List<User>) {
         _usersState.update { userState ->
             userState.copy(error = null, data = userState.data.toMutableList().apply {
                 addAll(
-                    response.results.map { user ->
+                    users.map { user ->
                         getUserUI(user)
                     })
             }
