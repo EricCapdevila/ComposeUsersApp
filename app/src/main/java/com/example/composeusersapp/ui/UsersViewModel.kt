@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.composeusersapp.data.UserRepository
 import com.example.composeusersapp.data.models.Name
 import com.example.composeusersapp.data.models.User
-import com.example.composeusersapp.data.models.UsersResponse
 import com.example.composeusersapp.data.parseDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +25,6 @@ class UsersViewModel @Inject constructor(
     private val _usersState = MutableStateFlow(UserListState())
     val usersState = _usersState.asStateFlow()
 
-    init {
-        getUsers(1)
-    }
-
     fun getUsers(page: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.getUsers(results, page, seed).apply {
@@ -41,7 +36,7 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    fun filterUsers(input: String) {
+    fun searchUsers(input: String) {
         viewModelScope.launch {
             val filteredData = if (input.isEmpty()) {
                 null
@@ -56,14 +51,25 @@ class UsersViewModel @Inject constructor(
         }
     }
 
+    fun filterRepeatedAndMapToUserUI(newUsers: List<User>, storedUsers: List<UserUI>): List<UserUI> {
+        return mutableListOf<UserUI>().apply {
+            newUsers.forEach { newUser ->
+                if (storedUsers.none { it.email == newUser.email }) {
+                    add(getUserUI(newUser))
+                }
+            }
+        }
+    }
+
     private fun updateList(users: List<User>) {
         _usersState.update { userState ->
-            userState.copy(error = null, data = userState.data.toMutableList().apply {
-                addAll(
-                    users.map { user ->
-                        getUserUI(user)
-                    })
-            }
+            userState.copy(
+                error = null,
+                data = userState.data.toMutableList().apply {
+                    addAll(
+                        filterRepeatedAndMapToUserUI(users, this)
+                    )
+                }
             )
         }
     }
@@ -76,7 +82,7 @@ class UsersViewModel @Inject constructor(
 
     // GET THE USER DATA UI READY
 
-    fun getUserUI(user: User): UserUI {
+    private fun getUserUI(user: User): UserUI {
         user.apply {
             return UserUI(
                 getUserName(name),

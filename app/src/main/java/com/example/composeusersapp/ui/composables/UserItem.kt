@@ -65,7 +65,6 @@ fun UserImage(source: String) {
             .size(70.dp)
             .clip(CircleShape)
     )
-
 }
 
 @Composable
