@@ -1,6 +1,5 @@
 package com.example.composeusersapp.ui.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -26,12 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composeusersapp.R.drawable
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.composeusersapp.ui.UserUI
 import com.example.composeusersapp.ui.theme.ComposeUsersAppTheme
 
@@ -59,18 +56,17 @@ fun UserItem(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserImage(source: String) {
-    Image(
-        painter = painterResource(id = drawable.ic_launcher_background),
-        contentDescription = "example",
-        modifier = Modifier
-            .padding(10.dp)
-            .clip(CircleShape)
-            .size(80.dp)
-            .border(5.dp, Color.White, CircleShape)
 
+    GlideImage(
+        model = source, contentDescription = "User Profile", modifier = Modifier
+            .padding(10.dp)
+            .size(70.dp)
+            .clip(CircleShape)
     )
+
 }
 
 @Composable
@@ -89,7 +85,11 @@ fun UserTextFields(name: String, email: String) {
 
 @Composable
 fun IconImage() {
-    Box (Modifier.fillMaxSize().padding(end = 5.dp), contentAlignment = Alignment.CenterEnd){
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(end = 5.dp), contentAlignment = Alignment.CenterEnd
+    ) {
         Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = "")
     }
 }
@@ -100,6 +100,6 @@ fun IconImage() {
 @Composable
 fun UserItemPreview() {
     ComposeUsersAppTheme {
-        UserItem(UserUI("Eric Capdevila Camino", "eric241@hotmail.es", "", "", "", ""))
+        UserItem(UserUI("Mr. Name Surname", "names@hotmail.es", "", "", "", ""))
     }
 }

@@ -84,7 +84,7 @@ class UsersViewModel @Inject constructor(
                 gender,
                 getRegistrationDate(registered.date),
                 phone,
-                picture.medium
+                picture.large
             )
         }
     }
