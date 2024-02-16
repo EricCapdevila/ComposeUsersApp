@@ -8,9 +8,13 @@ The user can then filter said results using the search bar.
 ### Details
 
 Architecture: MVVM.
+
 Framwork: Compose.
+
 Hilt: for Injecting the ViewModel with its Repository and Retrofit singleton instance.
+
 Glide: for Image downloading.
+
 Mockito and Junit: Very basic Unit tests for the UsersViewModel to test the users mapper and filter repeated logic.
 
 
